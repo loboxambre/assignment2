@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Profile - Web Identity Management</title>
+    <!-- CSS styling for the profile page -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -9,12 +10,14 @@
             margin: 0 auto;
             padding: 20px;
         }
+        /* Header with title and navigation buttons */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
+        /* Form styling (not used in this page but kept for consistency) */
         .form-group {
             margin-bottom: 15px;
         }
@@ -29,6 +32,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        /* Button styling */
         button {
             background-color: #4285f4;
             color: white;
@@ -37,16 +41,19 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        /* Profile information container styling */
         .profile-info {
             border: 1px solid #ddd;
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 4px;
         }
+        /* Profile field label styling */
         .profile-info h5 {
             margin: 0 0 5px 0;
             color: #666;
         }
+        /* Profile field value styling */
         .profile-info p {
             margin: 0;
             padding: 8px;
@@ -56,24 +63,29 @@
     </style>
 </head>
 <body>
+    <!-- Header section with title and navigation -->
     <div class="header">
         <h1>Profile Information</h1>
         <div>
+            <!-- Navigation buttons -->
             <a href="/dashboard"><button style="margin-right: 10px;">Dashboard</button></a>
             <a href="/logout"><button>Logout</button></a>
         </div>
     </div>
 
+    <!-- Username information section -->
     <div class="profile-info">
         <h5>Username</h5>
         <p><%= user.username %></p>
     </div>
 
+    <!-- Email information section -->
     <div class="profile-info">
         <h5>Email</h5>
         <p><%= user.email %></p>
     </div>
 
+    <!-- Google ID information section -->
     <div class="profile-info">
         <h5>Google ID</h5>
         <p><%= user.googleId %></p>

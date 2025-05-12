@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Web Identity Management</title>
+    <!-- Basic CSS styling for the home page -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,6 +11,7 @@
             padding: 20px;
             text-align: center;
         }
+        /* Styling for the Google login button */
         .login-btn {
             background-color: #4285f4;
             color: white;
@@ -24,12 +26,19 @@
     </style>
 </head>
 <body>
+    <!-- Main heading -->
     <h1>Welcome to Web Identity Management</h1>
+    
+    <!-- Conditional rendering based on authentication status -->
     <% if (!user) { %>
+        <!-- Display login button for unauthenticated users -->
         <p>Please log in to continue</p>
+        <!-- Link to Google OAuth authentication route -->
         <a href="/auth/google" class="login-btn">Login with Google</a>
     <% } else { %>
+        <!-- Display welcome message for authenticated users -->
         <p>Welcome back, <%= user.username %>!</p>
+        <!-- Link to dashboard for authenticated users -->
         <a href="/dashboard" class="login-btn">Go to Dashboard</a>
     <% } %>
 </body>

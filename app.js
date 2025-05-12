@@ -1,3 +1,4 @@
+// Import required modules
 import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
@@ -7,19 +8,24 @@ import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Load environment variables from .env file
 dotenv.config();
 
+// Set up __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Initialize Express app
 const app = express();
 
-// MongoDB connection
+// MongoDB connection variables
 let client;
 let db;
 
+// Connect to MongoDB function
 async function connectToMongo() {
   try {
+    // Create MongoDB client with ServerApi configuration
     client = new MongoClient(process.env.MONGODB_URI, {
       serverApi: {
         version: ServerApiVersion.v1,
@@ -27,7 +33,9 @@ async function connectToMongo() {
         deprecationErrors: true,
       }
     });
+    // Connect to the MongoDB server
     await client.connect();
+    // Get database instance
     db = client.db();
     console.log('Connected to MongoDB');
   } catch (err) {
@@ -36,28 +44,31 @@ async function connectToMongo() {
   }
 }
 
+// Establish MongoDB connection
 await connectToMongo();
 
-// Set up EJS as view engine
+// Configure Express view engine to use EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// Set up middleware
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json()); // Parse JSON bodies
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false
-}));
+})); // Configure session middleware
+
+// Initialize Passport for authentication
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Collections
+// Reference MongoDB collections
 const users = db.collection('users');
 const items = db.collection('items');
 
-// Passport configuration
+// Configure Google OAuth2.0 authentication strategy
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -65,8 +76,10 @@ passport.use(new GoogleStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
+      // Check if user already exists in database
       let user = await users.findOne({ googleId: profile.id });
       if (!user) {
+        // Create new user if not found
         const newUser = {
           googleId: profile.id,
           username: profile.displayName,
@@ -82,7 +95,10 @@ passport.use(new GoogleStrategy({
   }
 ));
 
+// Serialize user object to store in session
 passport.serializeUser((user, done) => done(null, user._id));
+
+// Deserialize user from session to request
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await users.findOne({ _id: new ObjectId(id) });
@@ -92,15 +108,18 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Routes
+// Define routes
+// Home page route
 app.get('/', (req, res) => {
   res.render('index', { user: req.user });
 });
 
+// Google authentication route
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
+// Google authentication callback route
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
@@ -108,8 +127,10 @@ app.get('/auth/google/callback',
   }
 );
 
+// Dashboard route (protected)
 app.get('/dashboard', isAuthenticated, async (req, res) => {
   try {
+    // Fetch items belonging to the logged-in user
     const userItems = await items.find({ userId: new ObjectId(req.user._id) }).toArray();
     res.render('dashboard', { user: req.user, items: userItems });
   } catch (error) {
@@ -117,8 +138,10 @@ app.get('/dashboard', isAuthenticated, async (req, res) => {
   }
 });
 
+// Create new item route
 app.post('/items', isAuthenticated, async (req, res) => {
   try {
+    // Create new item with user ID reference
     const item = {
       title: req.body.title,
       description: req.body.description,
@@ -132,8 +155,10 @@ app.post('/items', isAuthenticated, async (req, res) => {
   }
 });
 
+// Delete item route
 app.delete('/items/:id', isAuthenticated, async (req, res) => {
   try {
+    // Delete item only if it belongs to the logged-in user
     const result = await items.deleteOne({ 
       _id: new ObjectId(req.params.id), 
       userId: new ObjectId(req.user._id) 
@@ -145,8 +170,10 @@ app.delete('/items/:id', isAuthenticated, async (req, res) => {
   }
 });
 
+// View single item route
 app.get('/items/:id', isAuthenticated, async (req, res) => {
   try {
+    // Find item by ID and verify ownership
     const item = await items.findOne({ 
       _id: new ObjectId(req.params.id),
       userId: new ObjectId(req.user._id)
@@ -158,17 +185,19 @@ app.get('/items/:id', isAuthenticated, async (req, res) => {
   }
 });
 
+// User profile route
 app.get('/profile', isAuthenticated, (req, res) => {
   res.render('profile', { user: req.user });
 });
 
+// Logout route
 app.get('/logout', (req, res) => {
   req.logout(() => {
     res.redirect('/');
   });
 });
 
-// Middleware to check if user is authenticated
+// Authentication middleware
 function isAuthenticated(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect('/');

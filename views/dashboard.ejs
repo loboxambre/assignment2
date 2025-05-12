@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Dashboard - Web Identity Management</title>
+    <!-- CSS styling for the dashboard -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -9,12 +10,14 @@
             margin: 0 auto;
             padding: 20px;
         }
+        /* Header with user info and navigation buttons */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
+        /* Form input styling */
         .form-group {
             margin-bottom: 15px;
         }
@@ -29,6 +32,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        /* Button styling */
         button {
             background-color: #4285f4;
             color: white;
@@ -37,17 +41,20 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        /* Item card styling */
         .item {
             border: 1px solid #ddd;
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 4px;
         }
+        /* Item header with title and delete button */
         .item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        /* Delete button styling */
         .delete-btn {
             background-color: #dc3545;
             color: white;
@@ -59,14 +66,17 @@
     </style>
 </head>
 <body>
+    <!-- Header section with user info and navigation -->
     <div class="header">
         <h1>Welcome, <%= user.username %></h1>
         <div>
+            <!-- Navigation buttons -->
             <a href="/profile"><button style="margin-right: 10px;">Profile</button></a>
             <a href="/logout"><button>Logout</button></a>
         </div>
     </div>
 
+    <!-- Create new item form section -->
     <h2>Create New Item</h2>
     <form action="/items" method="POST">
         <div class="form-group">
@@ -80,28 +90,40 @@
         <button type="submit">Create Item</button>
     </form>
 
+    <!-- User's items list section -->
     <h2>Your Items</h2>
+    <!-- Conditional rendering based on whether user has items -->
     <% if (items && items.length > 0) { %>
+        <!-- Loop through each item and display it -->
         <% items.forEach(item => { %>
             <div class="item">
                 <div class="item-header">
+                    <!-- Item title with link to item details -->
                     <h3><a href="/items/<%= item._id %>" style="text-decoration: none; color: inherit;"><%= item.title %></a></h3>
+                    <!-- Delete button with JavaScript function call -->
                     <button class="delete-btn" onclick="deleteItem('<%= item._id %>')">Delete</button>
                 </div>
+                <!-- Item description -->
                 <p><%= item.description %></p>
+                <!-- Item creation date -->
                 <small>Created: <%= new Date(item.creationDate).toLocaleString() %></small>
             </div>
         <% }); %>
     <% } else { %>
+        <!-- Message when no items exist -->
         <p>No items created yet.</p>
     <% } %>
 
+    <!-- JavaScript for item deletion -->
     <script>
+        // Function to handle item deletion with confirmation
         function deleteItem(id) {
             if (confirm('Are you sure you want to delete this item?')) {
+                // Send DELETE request to server
                 fetch(`/items/${id}`, {
                     method: 'DELETE'
                 }).then(() => {
+                    // Reload page after successful deletion
                     window.location.reload();
                 });
             }
