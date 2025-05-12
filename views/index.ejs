@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Identity Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .login-btn {
+            background-color: #4285f4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Web Identity Management</h1>
+    <% if (!user) { %>
+        <p>Please log in to continue</p>
+        <a href="/auth/google" class="login-btn">Login with Google</a>
+    <% } else { %>
+        <p>Welcome back, <%= user.username %>!</p>
+        <a href="/dashboard" class="login-btn">Go to Dashboard</a>
+    <% } %>
+</body>
+</html> 

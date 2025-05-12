@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= item.title %> - Web Identity Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .item-details {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .item-title {
+            margin-top: 0;
+            color: #333;
+        }
+        .item-meta {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .actions {
+            margin-top: 20px;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome, <%= user.username %></h1>
+        <a href="/logout"><button>Logout</button></a>
+    </div>
+
+    <div class="item-details">
+        <h2 class="item-title"><%= item.title %></h2>
+        <div class="item-content">
+            <p><%= item.description %></p>
+        </div>
+        <div class="item-meta">
+            Created: <%= new Date(item.creationDate).toLocaleString() %>
+        </div>
+    </div>
+
+    <div class="actions">
+        <a href="/dashboard"><button>Back to Dashboard</button></a>
+        <button class="delete-btn" onclick="deleteItem('<%= item._id %>')">Delete Item</button>
+    </div>
+
+    <script>
+        function deleteItem(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                fetch(`/items/${id}`, {
+                    method: 'DELETE'
+                }).then(() => {
+                    window.location.href = '/dashboard';
+                });
+            }
+        }
+    </script>
+</body>
+</html> 

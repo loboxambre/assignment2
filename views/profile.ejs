@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile - Web Identity Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .profile-info {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .profile-info h5 {
+            margin: 0 0 5px 0;
+            color: #666;
+        }
+        .profile-info p {
+            margin: 0;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Profile Information</h1>
+        <div>
+            <a href="/dashboard"><button style="margin-right: 10px;">Dashboard</button></a>
+            <a href="/logout"><button>Logout</button></a>
+        </div>
+    </div>
+
+    <div class="profile-info">
+        <h5>Username</h5>
+        <p><%= user.username %></p>
+    </div>
+
+    <div class="profile-info">
+        <h5>Email</h5>
+        <p><%= user.email %></p>
+    </div>
+
+    <div class="profile-info">
+        <h5>Google ID</h5>
+        <p><%= user.googleId %></p>
+    </div>
+</body>
+</html> 
